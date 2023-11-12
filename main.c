@@ -5,9 +5,12 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAX_INPUT_SIZE 1024
-
-int main(void)
+/**
+ * main - Entry point for the simple shell
+ *
+ * Return: Always 0
+ */
+int main_simple_shell(void)
 {
     char input[MAX_INPUT_SIZE];
 
@@ -17,8 +20,8 @@ int main(void)
         char *path = "/bin/";
         char *command;
         char *args[2];
-        int status;
         pid_t child_pid;
+        int status;
 
         printf(":) ");
         if (fgets(input, MAX_INPUT_SIZE, stdin) == NULL)
@@ -60,11 +63,13 @@ int main(void)
         if (child_pid == 0)
         {
             char *full_command = malloc(strlen(path) + strlen(command) + 1);
+
             if (full_command == NULL)
             {
                 perror("Error");
                 exit(EXIT_FAILURE);
             }
+
             strcpy(full_command, path);
             strcat(full_command, command);
 
@@ -74,6 +79,7 @@ int main(void)
                 free(full_command);
                 exit(EXIT_FAILURE);
             }
+
             free(full_command);
         }
         else
