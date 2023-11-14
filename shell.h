@@ -9,5 +9,6 @@ extern char **environ;
 
 char *custom_getline(void);
 void print_environment(void);
+int custom_tokenize(char *input, char delim, char *tokens[], int max_tokens);
 
 #endif /* SHELL_H */
