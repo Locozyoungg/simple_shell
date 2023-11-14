@@ -10,6 +10,7 @@
 extern char **environ;
 
 #define MAX_INPUT_SIZE 1024
+#define MAX_COMMANDS 100
 
 char *custom_getline(void);
 void print_environment(void);
@@ -21,5 +22,6 @@ int _strcmp(char *s1, char *s2);
 int update_pwd(void);
 void handle_cd(char *argument);
 void execute_commands(char *input);
+int execute_logical_operators(char *input);
 
 #endif /* SHELL_H */
