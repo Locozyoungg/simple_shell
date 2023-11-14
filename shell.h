@@ -11,5 +11,7 @@ char *custom_getline(void);
 void print_environment(void);
 int custom_tokenize(char *input, char delim, char *tokens[], int max_tokens);
 void handle_exit(char *argument);
+int handle_setenv(char *variable, char *value);
+int handle_unsetenv(char *variable);
 
 #endif /* SHELL_H */
