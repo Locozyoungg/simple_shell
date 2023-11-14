@@ -20,5 +20,6 @@ int handle_unsetenv(char *variable);
 int _strcmp(char *s1, char *s2);
 int update_pwd(void);
 void handle_cd(char *argument);
+void execute_commands(char *input);
 
 #endif /* SHELL_H */

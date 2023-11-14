@@ -90,3 +90,28 @@ int main_simple_shell(void)
 
     return (0);
 }
+
+#define MAX_INPUT_SIZE 1024
+
+/**
+ * main - Entry point for the simple shell
+ *
+ * Return: Always 0
+ */
+int main(void) {
+    char input[MAX_INPUT_SIZE];
+
+    while (1) {
+        printf(":) ");
+        if (fgets(input, MAX_INPUT_SIZE, stdin) == NULL) {
+            printf("\n");
+            break;
+        }
+
+        input[strcspn(input, "\n")] = 0;
+
+        execute_commands(input);
+    }
+
+    return 0;
+}
