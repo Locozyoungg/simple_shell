@@ -1,142 +1,44 @@
 #include "shell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
 
 /**
- * main - Entry point for the simple shell
- *
- * Return: Always 0
- */
-int main_simple_shell(void)
+* main - entry point
+* @ac: arg count
+* @av: arg vector
+*
+* Return: 0 on success, 1 on error
+*/
+int main(int ac, char **av)
 {
-    char input[MAX_INPUT_SIZE];
+info_t info[] = { INFO_INIT };
+int fd = 2;
 
-    while (1)
-    {
-        char *token;
-        char *path = "/bin/";
-        char *command;
-        char *args[2];
-        pid_t child_pid;
-        int status;
+asm ("mov %1, %0\n\t"
+"add $3, %0"
+: "=r" (fd)
+: "r" (fd));
 
-        printf(":) ");
-        if (fgets(input, MAX_INPUT_SIZE, stdin) == NULL)
-        {
-            printf("\n");
-            break;
-        }
-
-        input[strcspn(input, "\n")] = 0;
-
-        token = strtok(input, " ");
-        if (token == NULL)
-            continue;
-
-        command = token;
-
-        if (strcmp(command, "exit") == 0)
-            break;
-
-        if (strcmp(command, "env") == 0)
-        {
-            print_environment();
-            continue;
-        }
-
-        token = strtok(NULL, " ");
-        args[0] = command;
-        args[1] = token;
-        args[2] = NULL;
-
-        child_pid = fork();
-
-        if (child_pid == -1)
-        {
-            perror("Fork error");
-            exit(EXIT_FAILURE);
-        }
-
-        if (child_pid == 0)
-        {
-            char *full_command = malloc(strlen(path) + strlen(command) + 1);
-
-            if (full_command == NULL)
-            {
-                perror("Error");
-                exit(EXIT_FAILURE);
-            }
-
-            strcpy(full_command, path);
-            strcat(full_command, command);
-
-            if (execve(full_command, args, NULL) == -1)
-            {
-                perror("Error");
-                free(full_command);
-                exit(EXIT_FAILURE);
-            }
-
-            free(full_command);
-        }
-        else
-        {
-            wait(&status);
-        }
-    }
-
-    return (0);
-}
-
-#define MAX_INPUT_SIZE 1024
-
-/**
- * main - Entry point for the simple shell
- *
- * Return: Always 0
- */
-int main(void) {
-    char input[MAX_INPUT_SIZE];
-
-    while (1) {
-        printf(":) ");
-        if (fgets(input, MAX_INPUT_SIZE, stdin) == NULL) {
-            printf("\n");
-            break;
-        }
-
-        input[strcspn(input, "\n")] = 0;
-
-        execute_commands(input);
-    }
-
-    return 0;
-}
-
-
-int main(void)
+if (ac == 2)
 {
-    char *line;
-    size_t len = 0;
-    ssize_t read;
-
-    while (1)
-    {
-        printf("$ ");
-        read = getline(&line, &len, stdin);
-        if (read == -1)
-        {
-            perror("getline");
-            break;
-        }
-
-        process_input(line);
-
-        free(line);
-    }
-
-    return 0;
+fd = open(av[1], O_RDONLY);
+if (fd == -1)
+{
+if (errno == EACCES)
+exit(126);
+if (errno == ENOENT)
+{
+_eputs(av[0]);
+_eputs(": 0: Can't open ");
+_eputs(av[1]);
+_eputchar('\n');
+_eputchar(BUF_FLUSH);
+exit(127);
+}
+return (EXIT_FAILURE);
+}
+info->readfd = fd;
+}
+populate_env_list(info);
+read_history(info);
+hsh(info, av);
+return (EXIT_SUCCESS);
 }
