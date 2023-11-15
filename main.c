@@ -115,3 +115,28 @@ int main(void) {
 
     return 0;
 }
+
+
+int main(void)
+{
+    char *line;
+    size_t len = 0;
+    ssize_t read;
+
+    while (1)
+    {
+        printf("$ ");
+        read = getline(&line, &len, stdin);
+        if (read == -1)
+        {
+            perror("getline");
+            break;
+        }
+
+        process_input(line);
+
+        free(line);
+    }
+
+    return 0;
+}

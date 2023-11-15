@@ -12,6 +12,7 @@ extern char **environ;
 #define MAX_INPUT_SIZE 1024
 #define MAX_COMMANDS 100
 
+void process_input(char *input);
 char *custom_getline(void);
 void print_environment(void);
 int custom_tokenize(char *input, char delim, char *tokens[], int max_tokens);
